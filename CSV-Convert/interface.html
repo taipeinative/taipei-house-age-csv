@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang = "en" dir = "ltr">
+
+<head>
+
+  <title> XML Reader </title>
+
+  <!-- Meta -->
+  <meta charset = "utf-8" />
+  <meta http-equiv = "content-type" content = "text/html" />
+  <meta name = "author" content = "@taipeinative on GitHub" />
+  <meta name = "description" content = "An interface to convert XMLs." />
+
+  <!-- Stylesheets -->
+  <link rel = "stylesheet" href = "style.css" />
+
+  <!-- Scripts -->
+  <script type = "text/javascript" src = "convert.js"></script>
+
+</head>
+
+<body>
+
+  <div id = "main">
+
+    <form id = "upload-section">
+
+      <label id = "upload-button-text" for = "upload-button">Upload XML:</label><br />
+      <input id = "upload-button" type = "file" name = "upload-button" accept = ".xml" />
+
+      <p id = "upload-preview"></p>
+
+      <button id = "convert-button" type = "button" onclick = "convert();">Convert to XML</button>
+
+    </form>
+
+    <div id = "download-section">
+
+    </div>
+
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,18 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+body {
+
+  background-color: #404040;
+  color: #d9d9d9;
+  font-family: 'Open Sans', 'Corbel', 'Dubai', 'Arial', sans-serif;
+  font-size: 20px;
+
+}
+
+#upload-preview {
+
+  background-color: #606060;
+  font-family: 'Consolas', console , monospace;
+
+}
