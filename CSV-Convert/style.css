@@ -1,22 +1,118 @@
 
+/* Universal Variables */
+
+:root {
+
+  --bkgdClr: #FFFFFF;  /* Background Color */
+  --txbkClr: #303030;  /* Text Color (Black)*/
+  --txgrClr: #A0A0A0;  /* Text Color (Grey)*/
+  --txwtClr: #F0F0F0;  /* Text Color (White)*/
+  --linkClr: #0969DA;  /* Link Color */
+  --lkhvClr: #9dc9fb;  /* Hovered Link Color */
+  --nbhdClr: #404040;  /* Navbar Header Color*/
+  --stneClr: #E0E0E0;  /* Navbar Status 'Unfocused' Color */
+  --stfcClr: #A0A0A0;  /* Navbar Status 'Focused' Color */
+  --stpsClr: #DDBB22;  /* Navbar Status 'Processing' Color */
+  --stfnClr: #30A330;  /* Navbar Status 'Finish' Color */
+  --sterClr: #DA1010;  /* Navbar Status 'Error' Color */
+  --dftFont: 'Open Sans', 'Corbel', 'Dubai', 'Arial', sans-serif;  /* Default Typefaces */
+  --cdeFont: 'Consolas', console , monospace;  /* Code Typefaces */
+
+}
+
+
+
+/* Properties */
+
+@Property --gdClrA {
+
+  syntax: '<color>';
+  inherits: false;
+  initial-value: #2873E9;
+
+}
+
+@Property --gdClrB {
+
+  syntax: '<color>';
+  inherits: false;
+  initial-value: #045DE9;
+
+}
+
+
+
+/* Imports */
+
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 /* Elements */
 
 body {
 
-  background-color: #404040;
-  color: #d9d9d9;
-  font-family: 'Open Sans', 'Corbel', 'Dubai', 'Arial', sans-serif;
-  font-size: 20px;
+  background-color: var(--bkgdClr);
+  color: var(--txbkClr);
+  font-family: var(--dftFont);
+  font-size: 100%;
+  margin: 0px;
 
 }
 
-p {
+a {
+
+  color: var(--linkClr);
+  cursor: pointer;
+  text-decoration: none;
+
+}
+
+a:hover {
+
+  color: var(--lkhvClr);
+  transition: all .5s;
+  -webkit-transition: all .5s;
+
+}
+
+h1 , h2 , p {
 
   margin: 0px;
 
 }
+
+h2 {
+
+  font-size: 125%;
+
+}
+
+input[type='file'] {
+
+  display: none;
+
+}
+
+
+/* Pseudo Elements */
+
+::-webkit-scrollbar {
+  width: 1em;
+}
+
+::-webkit-scrollbar-track {
+  background: #E0E0E0FF;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #909090;
+  border: 2px hidden #FFF;
+  border-radius: 0.5em;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #606060;
+}
+
 
 /* Classes */
 
@@ -26,34 +122,142 @@ p {
 
 }
 
+.navbar-item {
 
-/* Ids */
-
-#header-title {
-
-  background: #E60000;
-  color: #F0F0F0;
-  font-size: 28px;
-  font-weight: bold;
-  margin: 0px;
-  padding: 5px 8px;
+  float: left;
+  height: 25px;
+  margin: 0px 0px;
+  text-align: center;
+  width: 33.33%;
 
 }
 
-#upload-title {
+.navbar-none {
 
-  background: linear-gradient(#E60000FF, #E6000000);
+  background-color: var(--stneClr);
+  color: var(--txgrClr);
+  font-weight: normal;
+
+}
+
+.navbar-focus {
+
+  background-color: var(--stfcClr);
+  color: var(--txwtClr);
+
+}
+
+.navbar-process {
+
+  background-color: var(--stpsClr);
+  color: var(--txwtClr);
+
+}
+
+.navbar-finish {
+
+  background-color: var(--stfnClr);
+  color: var(--txwtClr);
+
+}
+
+.navbar-error {
+
+  background-color: var(--sterClr);
+  color: var(--txwtClr);
+
+}
+
+
+/* Ids */
+
+#navbar-section {
+
+  font-weight: bold;
+  position: sticky;
+  top: 0px;
+
+}
+
+#navbar-header {
+
+  background: var(--nbhdClr);
+  height: 30px;
+  padding: 5px 8px;
+  width: auto;
+
+}
+
+#navbar-title {
+
+  color: var(--txwtClr);
+  font-size: 130%;
   margin: 0px;
-  padding: 10px 8px;
+
+}
+
+#info-section {
+
+  float: left;
+  height: 480px;
+  margin-left: 1.5%;
+  margin-right: 1.5%;
+  margin-top: 15px;
+  padding-left: 1.5%;
+  padding-right: 1.5%;
+  padding-top: 20px;
+  width: 27.33%;
+
+}
+
+#info-text {
+
+  margin-top: 10px;
+
+}
+
+#info-button {
+
+  background-color: #045DE9;
+  background-image: linear-gradient(0deg, var(--gdClrA) 0%, var(--gdClrB) 75%);
+  border: 2px hidden #FFF;
+  border-radius: 15px;
+  color: #FFF;
+  display: block;
+  cursor: pointer;
+  margin-top: 20px;
+  padding: 2px 0px;
   text-align: center;
+  transition: .4s --gdClrA, .4s --gdClrB;
+  width:50%;
+
+}
+
+#info-button:hover {
+
+    --gdClrA: #769FE0;
+    --gdClrB: #5F9DFF;
+
+}
+
+#upload-section {
+
+  float: left;
+  width: 66.66%;
+
+}
+
+#preview-section {
+
+  display: block;
 
 }
 
 #preview-text {
 
-  background-color: #606060;
-  height: 400px;
-  font-family: 'Consolas', console , monospace;
+  background-color: #D0D0D0;
+  height: 480px;
+  font-family: var(--cdeFont);
   margin: 0px;
   overflow: auto;
 

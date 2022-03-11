@@ -8,7 +8,7 @@ var isLonger = 0;
 
 
 // Pre-defined functions.
-// Allow stylish console.logs.
+// Stylish console.logs.
 function message(code) {
 
   var rightNow = new Date();
@@ -20,28 +20,28 @@ function message(code) {
 
   switch (code) {
 
-    case 'WindowReady' :
+    case 'windowReady' :
       logMessage = `%c${timestamp}%c Window is ready.`;
       break;
 
-    case 'StartListening' :
+    case 'startListening' :
       logMessage = `%c${timestamp}%c Start listening events.`;
       break;
 
-    case 'StartReading' :
+    case 'startReading' :
       logMessage = `%c${timestamp}%c Start reading files.`;
       break;
 
-    case 'FinishReading' :
+    case 'finishReading' :
       logMessage = `%c${timestamp}%c > Finish reading files.`;
       break;
 
-    case 'StopReading' :
+    case 'stopReading' :
       logMessage = `%c${timestamp}%c > Error: The file is not loaded.`;
       logCss2 = 'color: red; font-weight: bold;';
       break;
 
-    case 'PreviewLoaded' :
+    case 'previewLoaded' :
       logMessage = `%c${timestamp}%c > Preview texts are loaded.`;
       break;
 
@@ -80,14 +80,72 @@ function codeRestorer (code) {
 
 }
 
+// Take care of the status of the navigation bar.
+function statusUpdate(code) {
 
+  var firstBlock = document.getElementById('navbar-upload');
+  var secondBlock = document.getElementById('navbar-preview');
+  var thirdBlock = document.getElementById('navbar-convert');
+
+  switch (code) {
+
+    case 'initialize':
+
+      firstBlock.className = '';
+      secondBlock.className = '';
+      thirdBlock.className = '';
+      firstBlock.classList.add('navbar-item');
+      secondBlock.classList.add('navbar-item');
+      thirdBlock.classList.add('navbar-item');
+      firstBlock.classList.add('navbar-focus');
+      secondBlock.classList.add('navbar-none');
+      thirdBlock.classList.add('navbar-none');
+      break;
+
+    case 'startReading':
+
+      firstBlock.classList.replace('navbar-focus','navbar-process');
+      break;
+
+    case 'finishReading':
+
+      firstBlock.innerHTML = 'Uploaded';
+      firstBlock.classList.replace('navbar-process','navbar-finish');
+      secondBlock.classList.replace('navbar-none','navbar-focus');
+      break;
+
+    case 'stopReading':
+
+      firstBlock.classList.replace('navbar-process','navbar-error');
+      break;
+
+  }
+
+}
+
+
+
+
+
+// Main Codes
 // Add a listener to upload button.
 window.onload = function () {
 
-  message('WindowReady');
+  message('windowReady');
+  statusUpdate('initialize');
   document.getElementById('upload-button').onchange = readfile;
+  var info = document.getElementById('info-button');
+  var upload = document.getElementById('upload-button');
+
+  info.addEventListener("click", function (e) {
+    if (upload) {
+      upload.click();
+    }
+    e.preventDefault(); // prevent navigation to "#"
+  }, false);
 
 };
+
 
 
 
@@ -102,25 +160,29 @@ window.onload = function () {
 // I added some logs to confirm its status.
 function readfile() {
 
-  message('StartListening');
+  message('startListening');
 
   var file = this.files[0];
   var fReader = new FileReader();
 
   fReader.onloadstart = function (event) {
-    message('StartReading');
+    message('startReading');
+    statusUpdate('startReading');
     document.getElementById('preview-text').innerHTML = 'Processing files...';
   };
 
   fReader.onload = function (event) {
-    message('FinishReading');
+    message('finishReading');
     previewText = codeRestorer(codeSlicer(fReader.result,0,999));
     document.getElementById('preview-text').innerHTML = previewText;
-    message('PreviewLoaded');
+    message('previewLoaded');
+    statusUpdate('finishReading');
   };
 
   fReader.onerror = function (event) {
-    message('StopReading');
+    message('stopReading');
+    statusUpdate('stopReading');
+    document.getElementById('preview-text').innerHTML = 'Failed to process the files. Please refresh the page.';
   };
 
   fReader.readAsText(file,"utf-8");
