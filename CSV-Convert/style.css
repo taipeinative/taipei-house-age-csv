@@ -1,6 +1,8 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
+/* Elements */
+
 body {
 
   background-color: #404040;
@@ -10,9 +12,55 @@ body {
 
 }
 
-#upload-preview {
+p {
+
+  margin: 0px;
+
+}
+
+/* Classes */
+
+.continue {
+
+  color: #808080;
+
+}
+
+
+/* Ids */
+
+#header-title {
+
+  background: #E60000;
+  color: #F0F0F0;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0px;
+  padding: 5px 8px;
+
+}
+
+#upload-title {
+
+  background: linear-gradient(#E60000FF, #E6000000);
+  margin: 0px;
+  padding: 10px 8px;
+  text-align: center;
+
+}
+
+#preview-text {
 
   background-color: #606060;
+  height: 400px;
   font-family: 'Consolas', console , monospace;
+  margin: 0px;
+  overflow: auto;
+
+}
+
+#download-section {
+
+  display: none;
 
 }

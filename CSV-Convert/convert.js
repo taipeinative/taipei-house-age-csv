@@ -4,13 +4,16 @@ var logMessage = '';
 var logCss1 = '';
 var logCss2 = '';
 var previewText = '';
+var isLonger = 0;
 
 
 // Pre-defined functions.
+// Allow stylish console.logs.
 function message(code) {
 
   var rightNow = new Date();
-  var timestamp = `${rightNow.getHours() + ':' + rightNow.getMinutes() + ':' + rightNow.getSeconds() + '.' + rightNow.getMilliseconds()}`;
+  var tsList = [ ( (rightNow.getHours() < 10 ) ? ( '0' + rightNow.getHours() ) : rightNow.getHours() ) , ( (rightNow.getMinutes() < 10 ) ? ( '0' + rightNow.getMinutes() ) : rightNow.getMinutes() ) , ( (rightNow.getSeconds() < 10 ) ? ( '0' + rightNow.getSeconds() ) : rightNow.getSeconds() ), rightNow.getMilliseconds()];
+  var timestamp = `${tsList[0] + ':' + tsList[1] + ':' + tsList[2] + '.' + tsList[3]}`;
   logMessage = `%c${timestamp}%c This is a test message.`;
   logCss1 = 'color: black; font-weight: regular; font-style: none; ';
   logCss2 = 'color: grey; font-style: italic;';
@@ -38,6 +41,10 @@ function message(code) {
       logCss2 = 'color: red; font-weight: bold;';
       break;
 
+    case 'PreviewLoaded' :
+      logMessage = `%c${timestamp}%c > Preview texts are loaded.`;
+      break;
+
   }
 
   console.log(logMessage,logCss1,logCss2);
@@ -45,10 +52,31 @@ function message(code) {
 }
 
 
+function codeSlicer (code,from,to) {
+
+  var codeLength = code.length;
+  var result = code.slice(from,to);
+  if ( codeLength > ( to - from) ) {
+
+    isLonger = 0;
+    return `${result + '^' + ( codeLength - ( to - from ) ) + '%' }`;
+
+  } else {
+
+    isLonger = 1;
+    return `${result} <br /><span class = "continue">(End of the preview)</span>`;
+
+  }
+
+}
+
 // Restore features including line breaks and tabs from source code.
 function codeRestorer (code) {
 
-  return code.replace(/</g,'&lt;').replace(/\n/g,'<br />').replace(/\t/g,'&ensp;&ensp;');
+  var result = code.replace(/<(?!br|span|\/span)/g,'&lt;').replace(/\n/g,'<br />').replace(/\t/g,'&ensp;&ensp;');
+  result = ( (isLonger) ? (result) : ( result.replace(/\^\d+%/,'<br /><span class = "continue">(End of the preview)<br />(') + result.match(/(?<=\^)\d+(?=%)/) + ' characters behind)</span>') );
+
+  return result;
 
 }
 
@@ -79,20 +107,22 @@ function readfile() {
   var file = this.files[0];
   var fReader = new FileReader();
 
-  fReader.readAsText(file,"utf-8");
-
   fReader.onloadstart = function (event) {
     message('StartReading');
+    document.getElementById('preview-text').innerHTML = 'Processing files...';
   };
 
   fReader.onload = function (event) {
     message('FinishReading');
-    previewText = fReader.result.slice(0,99)
-    document.getElementById('upload-preview').innerHTML = codeRestorer(previewText);
+    previewText = codeRestorer(codeSlicer(fReader.result,0,999));
+    document.getElementById('preview-text').innerHTML = previewText;
+    message('PreviewLoaded');
   };
 
   fReader.onerror = function (event) {
     message('StopReading');
   };
+
+  fReader.readAsText(file,"utf-8");
 
 }

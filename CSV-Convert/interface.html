@@ -23,18 +23,29 @@
 
   <div id = "main">
 
-    <form id = "upload-section">
+    <div id = "header-section">
 
-      <label id = "upload-button-text" for = "upload-button">Upload XML:</label><br />
+      <p id = "header-title">.CSV Converter</p>
+
+    </div>
+
+    <div id = "upload-section">
+
+      <p id = "upload-title">Upload XML</p><br />
       <input id = "upload-button" type = "file" name = "upload-button" accept = ".xml" />
 
-      <p id = "upload-preview"></p>
+    </div>
 
-      <button id = "convert-button" type = "button" onclick = "convert();">Convert to XML</button>
+    <div id = "preview-section">
 
-    </form>
+      <p id = "preview-title">File Preview</p>
+      <p id = "preview-text"></p>
+
+    </div>
 
     <div id = "download-section">
+
+      <button id = "convert-button" type = "button" onclick = "convert();">Convert to XML</button>
 
     </div>
 
