@@ -1,65 +1,53 @@
-
 // Pre-defined variables.
-var logMessage = '';
-var logCss1 = '';
-var logCss2 = '';
 var previewText = '';
+var isLonger = 0;
+var language = 'en';
+var currentState = 'upload';
 
 
-// Pre-defined functions.
-function message(code) {
-
-  var rightNow = new Date();
-  var timestamp = `${rightNow.getHours() + ':' + rightNow.getMinutes() + ':' + rightNow.getSeconds() + '.' + rightNow.getMilliseconds()}`;
-  logMessage = `%c${timestamp}%c This is a test message.`;
-  logCss1 = 'color: black; font-weight: regular; font-style: none; ';
-  logCss2 = 'color: grey; font-style: italic;';
-
-  switch (code) {
-
-    case 'WindowReady' :
-      logMessage = `%c${timestamp}%c Window is ready.`;
-      break;
-
-    case 'StartListening' :
-      logMessage = `%c${timestamp}%c Start listening events.`;
-      break;
-
-    case 'StartReading' :
-      logMessage = `%c${timestamp}%c Start reading files.`;
-      break;
-
-    case 'FinishReading' :
-      logMessage = `%c${timestamp}%c > Finish reading files.`;
-      break;
-
-    case 'StopReading' :
-      logMessage = `%c${timestamp}%c > Error: The file is not loaded.`;
-      logCss2 = 'color: red; font-weight: bold;';
-      break;
-
-  }
-
-  console.log(logMessage,logCss1,logCss2);
-
-}
 
 
-// Restore features including line breaks and tabs from source code.
-function codeRestorer (code) {
 
-  return code.replace(/</g,'&lt;').replace(/\n/g,'<br />').replace(/\t/g,'&ensp;&ensp;');
-
-}
-
-
-// Add a listener to upload button.
+// Core functions.
+// Initialize and add listeners to 'buttons'.
 window.onload = function () {
 
-  message('WindowReady');
+  currentState = 'upload';
   document.getElementById('upload-button').onchange = readfile;
+  clickUpload();
+  clickLanguage();
+  message();
+  statusUpdate();
 
 };
+
+
+
+// Intercept users' click event to trigger true <input> button.
+/*
+  Reference source code & author:
+
+    https://developer.mozilla.org/zh-TW/docs/Web/API/File/Using_files_from_web_applications, by Mozilla
+
+*/
+function clickUpload() {
+
+  var info = document.getElementById('info-button');
+  var upload = document.getElementById('upload-button');
+
+  info.addEventListener("click", function (e) {
+
+    if (upload) {
+
+      upload.click();
+
+    }
+
+    e.preventDefault();
+
+  }, false);
+
+}
 
 
 
@@ -71,28 +59,85 @@ window.onload = function () {
     https://kknews.cc/zh-tw/code/e6p2ygq.html, by IT人一直在路上
 
 */
-// I added some logs to confirm its status.
 function readfile() {
 
-  message('StartListening');
-
   var file = this.files[0];
-  var fReader = new FileReader();
+  var fileManager = new FileReader();
 
-  fReader.readAsText(file,"utf-8");
+  fileManager.onloadstart = function (event) {
 
-  fReader.onloadstart = function (event) {
-    message('StartReading');
+    currentState = 'uploadProcess';
+    message();
+    statusUpdate();
+    localeUpdate();
+
   };
 
-  fReader.onload = function (event) {
-    message('FinishReading');
-    previewText = fReader.result.slice(0,99)
-    document.getElementById('upload-preview').innerHTML = codeRestorer(previewText);
+  fileManager.onload = function (event) {
+
+    currentState = 'preview';
+    previewText = codeRestorer(codeSlicer(fileManager.result,0,9999));
+    document.getElementById('preview-text').innerHTML = previewText;
+    message();
+    statusUpdate();
+    localeUpdate();
+
   };
 
-  fReader.onerror = function (event) {
-    message('StopReading');
+  fileManager.onerror = function (event) {
+
+    currentState = 'uploadFailed';
+    message();
+    statusUpdate();
+    localeUpdate();
+
   };
+
+  fileManager.readAsText(file,"utf-8");
+
+}
+
+
+
+// Slice .xml files in order to speed up preview time.
+function codeSlicer (code,from,to) {
+
+  var codeLength = code.length;
+  var result = code.slice(from,to);
+  if ( codeLength > ( to - from) ) {
+
+    isLonger = 0;
+    return `${result + '^' + ( codeLength - ( to - from ) ) + '%' }`;
+
+  } else {
+
+    isLonger = 1;
+    return `${result} <br /><span class = "continue">(End of the preview)</span>`;
+
+  }
+
+}
+
+
+
+// Restore features including line breaks and tabs from source code.
+/*
+  Following shows how these regular expressions work.
+
+    RegEx:  /<(?!br|span|\/span)/g , /\n/g , /\t/g
+    Input:  \t\t<tag>Hello World</tag>\n<br />
+    Output: &ensp;&ensp;&ensp;&ensp;&lt;tag>Hello World&lt;/tag><br /><br />
+
+    RegEx:  /\^\d+%/ , /(?<=\^)\d+(?=%)/
+    Input:  I^m feelin' 100% good. ^1111%
+    Output: I^m feelin' 100% good. <br /><span class = "continue">(End of the preview)<br />( 1111 characters behind)</span>
+
+*/
+function codeRestorer (code) {
+
+  var result = code.replace(/<(?!br|span|\/span)/g,'&lt;').replace(/\n/g,'<br />').replace(/\t/g,'&ensp;&ensp;');
+  result = ( (isLonger) ? (result) : ( result.replace(/\^\d+%/,'<br /><span class = "continue">(End of the preview)<br />(') + result.match(/(?<=\^)\d+(?=%)/) + ' characters behind)</span>') );
+
+  return result;
 
 }

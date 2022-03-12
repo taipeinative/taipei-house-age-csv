@@ -1,18 +1,318 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+/* Universal Variables */
 
-body {
+:root {
 
-  background-color: #404040;
-  color: #d9d9d9;
-  font-family: 'Open Sans', 'Corbel', 'Dubai', 'Arial', sans-serif;
-  font-size: 20px;
+  --bkgdClr: #FFFFFF;  /* Background Color */
+  --txbkClr: #303030;  /* Text Color (Black)*/
+  --txgrClr: #A0A0A0;  /* Text Color (Grey)*/
+  --txwtClr: #F0F0F0;  /* Text Color (White)*/
+  --linkClr: #0969DA;  /* Link Color */
+  --lkhvClr: #9dc9fb;  /* Hovered Link Color */
+  --nbhdClr: #404040;  /* Navbar Header Color*/
+  --stneClr: #E0E0E0;  /* Navbar Status 'Unfocused' Color */
+  --stfcClr: #A0A0A0;  /* Navbar Status 'Focused' Color */
+  --stpsClr: #DDBB22;  /* Navbar Status 'Processing' Color */
+  --stfnClr: #30A330;  /* Navbar Status 'Finish' Color */
+  --sterClr: #DA1010;  /* Navbar Status 'Error' Color */
+  --dftFont: 'Open Sans', 'Corbel', 'Dubai', 'Arial', sans-serif;  /* Default English Typefaces */
+  --dfzFont: 'Noto Sans TC' , 'PingFang' , sans-serif;  /* Default Chinese Typefaces */
+  --cdeFont: 'Consolas' , monospace;  /* Code Typefaces */
 
 }
 
-#upload-preview {
 
-  background-color: #606060;
-  font-family: 'Consolas', console , monospace;
+
+/* Properties */
+
+@Property --gdClrA {
+
+  syntax: '<color>';
+  inherits: false;
+  initial-value: #2873E9;
+
+}
+
+@Property --gdClrB {
+
+  syntax: '<color>';
+  inherits: false;
+  initial-value: #045DE9;
+
+}
+
+
+
+/* Imports */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+
+
+/* Elements */
+
+body {
+
+  background-color: var(--bkgdClr);
+  color: var(--txbkClr);
+  font-family: var(--dftFont);
+  font-size: 100%;
+  margin: 0px;
+
+}
+
+a {
+
+  color: var(--linkClr);
+  cursor: pointer;
+  text-decoration: none;
+
+}
+
+a:hover {
+
+  color: var(--lkhvClr);
+  transition: all .5s;
+  -webkit-transition: all .5s;
+
+}
+
+h1 , h2 , p {
+
+  margin: 0px;
+
+}
+
+h2 {
+
+  font-size: 125%;
+
+}
+
+input[type='file'] {
+
+  display: none;
+
+}
+
+
+
+/* Pseudo Elements */
+/*
+  Reference source code & author:
+
+    https://www.w3schools.com/howto/howto_css_custom_scrollbar.asp, by W3Schools
+
+*/
+
+::-webkit-scrollbar {
+  width: 1em; /* Scrollbar track width*/
+}
+
+::-webkit-scrollbar-track {
+  background: #E0E0E0FF; /* Scrollbar track color*/
+}
+
+::-webkit-scrollbar-thumb {
+  background: #909090;
+  border: 2px hidden #FFF;
+  border-radius: 0.5em;  /* Scrollbar thumb settings*/
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #606060;  /* Hovered scrollbar thumb settings*/
+}
+
+
+
+/* Classes */
+
+.continue {
+
+  color: #808080;
+
+}
+
+.navbar-item {
+
+  float: left;
+  height: 25px;
+  margin: 0px 0px;
+  text-align: center;
+  width: 33.33%;
+
+}
+
+.navbar-none {
+
+  background-color: var(--stneClr);
+  color: var(--txgrClr);
+  font-weight: normal;
+
+}
+
+.navbar-focus {
+
+  background-color: var(--stfcClr);
+  color: var(--txwtClr);
+
+}
+
+.navbar-process {
+
+  background-color: var(--stpsClr);
+  color: var(--txwtClr);
+
+}
+
+.navbar-finish {
+
+  background-color: var(--stfnClr);
+  color: var(--txwtClr);
+
+}
+
+.navbar-error {
+
+  background-color: var(--sterClr);
+  color: var(--txwtClr);
+
+}
+
+
+
+/* Ids */
+
+#navbar-section {
+
+  font-weight: bold;
+  position: sticky;
+  top: 0px;
+
+}
+
+#navbar-header {
+
+  background: var(--nbhdClr);
+  display: block;
+  float: left;
+  height: 38px;
+  overflow: hidden;
+  width: 90%;
+
+}
+
+#navbar-title {
+
+  color: var(--txwtClr);
+  font-size: 130%;
+  margin: 0px;
+  padding: 5px 8px;
+
+}
+
+#navbar-language {
+
+  background: var(--nbhdClr);
+  display: block;
+  float: left;
+  height: 38px;
+  overflow: hidden;
+  text-align: right;
+  width: 10%;
+
+}
+
+#navbar-button {
+
+  color: var(--txwtClr);
+  display: block;
+  font-size: 130%;
+  font-style: normal;
+  margin: 0px;
+  padding: 5px 10% 5px 0px;
+
+}
+
+#info-section {
+
+  float: left;
+  height: 500px;
+  margin-left: 1.5%;
+  margin-right: 1.5%;
+  margin-top: 15px;
+  padding-left: 1.5%;
+  padding-right: 1.5%;
+  padding-top: 20px;
+  width: 27.33%;
+
+}
+
+#info-text {
+
+  margin-top: 10px;
+
+}
+
+
+/*
+  Reference source code & author:
+
+    https://github.com/chokcoco/iCSS/issues/109, by @chokcoco on GitHub
+
+*/
+
+#info-button {
+
+  background-color: #045DE9;
+  background-image: linear-gradient(0deg, var(--gdClrA) 0%, var(--gdClrB) 75%);
+  border: 2px hidden #FFF;
+  border-radius: 15px;
+  color: #FFF;
+  display: block;
+  cursor: pointer;
+  margin-top: 20px;
+  padding: 2px 0px;
+  text-align: center;
+  transition: .4s --gdClrA, .4s --gdClrB;
+  width:50%;
+
+}
+
+#info-button:hover {
+
+    --gdClrA: #769FE0;
+    --gdClrB: #5F9DFF;
+
+}
+
+#preview-section {
+
+  display: block;
+  float: left;
+  height: 500px;
+  margin-left: 1.5%;
+  margin-right: 1.5%;
+  margin-top: 15px;
+  padding-left: 1.5%;
+  padding-right: 1.5%;
+  padding-top: 20px;
+  width: 60.66%;
+
+}
+
+#preview-text {
+
+  background-color: #E0E0E0;
+  height: 400px;
+  font-family: var(--cdeFont);
+  margin-top: 10px;
+  overflow: auto;
+
+}
+
+#download-section {
+
+  display: none;
 
 }

@@ -1,0 +1,130 @@
+[
+
+  {
+    "id": "navbar-button",
+    "state": "all",
+    "en": "Zh",
+    "zh": "En"
+  },
+  {
+    "id": "head-title",
+    "state": "all",
+    "en": "CSV Converter",
+    "zh": "CSV 轉換器"
+  },
+  {
+    "id": "navbar-title",
+    "state": "all",
+    "en": ".CSV Converter",
+    "zh": ".CSV 轉換器"
+  },
+  {
+    "id": "navbar-upload",
+    "state": "upload , uploadProcess",
+    "en": "Upload",
+    "zh": "匯入"
+  },
+  {
+    "id": "navbar-preview",
+    "state": "upload , uploadProcess , uploadFailed , preview",
+    "en": "Preview",
+    "zh": "預覽"
+  },
+  {
+    "id": "navbar-convert",
+    "state": "upload , uploadProcess , uploadFailed , preview , convert",
+    "en": "Convert",
+    "zh": "轉換"
+  },
+  {
+    "id": "navbar-upload",
+    "state": "preview , convert , convertEnded",
+    "en": "Uploaded",
+    "zh": "已匯入"
+  },
+  {
+    "id": "navbar-preview",
+    "state": "convert , convertEnded",
+    "en": "Previewed",
+    "zh": "已預覽"
+  },
+  {
+    "id": "navbar-convert",
+    "state": "convertEnded",
+    "en": "Completed",
+    "zh": "已完成"
+  },
+  {
+    "id": "info-title",
+    "state": "upload , uploadProcess",
+    "en": "Upload XML",
+    "zh": "匯入XML檔案"
+  },
+  {
+    "id": "info-text",
+    "state": "upload , uploadProcess",
+    "en": "Upload historical buildong license .xml files downloaded from <a id = \"upload-link\" href = \"https://data.taipei/#/dataset/detail?id=c876ff02-af2e-4eb8-bd33-d444f5052733\">data.taipei</a> so as to parse the file.",
+    "zh": "匯入來自<a id = \"upload-link\" href = \"https://data.taipei/#/dataset/detail?id=c876ff02-af2e-4eb8-bd33-d444f5052733\">臺北市資料大平臺</a>的歷年建照摘要.xml檔案以便解析。"
+  },
+  {
+    "id": "info-button",
+    "state": "upload , uploadProcess",
+    "en": "Upload",
+    "zh": "匯入"
+  },
+  {
+    "id": "preview-title",
+    "state": "all",
+    "en": "Preview",
+    "zh": "預覽檔案"
+  },
+  {
+    "id": "preview-text",
+    "state": "uploadProcess",
+    "en": "Processing files...",
+    "zh": "檔案載入中……"
+  },
+  {
+    "id": "preview-text",
+    "state": "special",
+    "en": " <br /><span class = \"continue\">(End of the preview)</span>",
+    "zh": " <br /><span class = \"continue\">（預覽結束）</span>"
+  },
+  {
+    "id": "preview-text",
+    "state": "special",
+    "en": "<br /><span class = \"continue\">(End of the preview)<br />(",
+    "zh": "<br /><span class = \"continue\">（預覽結束）<br />（尚有"
+  },
+  {
+    "id": "preview-text",
+    "state": "special",
+    "en": " characters behind)</span>",
+    "zh": "個字元未顯示）</span>"
+  },
+  {
+    "id": "preview-text",
+    "state": "uploadFailed",
+    "en": "Failed to process the files. Please refresh the page.",
+    "zh": "檔案載入失敗。請重新載入本頁。"
+  },
+  {
+    "id": "info-title",
+    "state": "preview",
+    "en": "Preview XML Files",
+    "zh": "預覽XML檔案"
+  },
+  {
+    "id": "info-text",
+    "state": "preview",
+    "en": "Preview your .xml files in the right. If there&#39;s no problem, you can go ahead.",
+    "zh": "右側視窗中顯示您的.xml檔案的預覽畫面。倘若沒有問題，請點擊下一步。"
+  },
+  {
+    "id": "info-button",
+    "state": "preview",
+    "en": "Next",
+    "zh": "下一步"
+  }
+
+]
