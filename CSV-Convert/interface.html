@@ -3,7 +3,7 @@
 
 <head>
 
-  <title> CSV Converer </title>
+  <title id = "head-title"> CSV Converter </title>
 
   <!-- Meta -->
   <meta charset = "utf-8" />
@@ -16,7 +16,8 @@
 
   <!-- Scripts -->
   <script type = "text/javascript" src = "convert.js"></script>
-  <script type = "text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <script type = "text/javascript" src = "locale.js"></script>
+  <script type = "text/javascript" src = "misc.js"></script>
   <script>
 
   </script>
@@ -30,6 +31,7 @@
     <div id = "navbar-section">
 
       <div id = "navbar-header"><h1 id = "navbar-title">.CSV Converter</h1></div>
+      <div id = "navbar-language"><a id = "navbar-button" href = "#">Zh</a></div>
       <div id = "navbar-upload">Upload</div>
       <div id = "navbar-preview">Preview</div>
       <div id = "navbar-convert">Convert</div>
@@ -41,18 +43,13 @@
       <h2 id = "info-title">Upload XML</h2>
       <p id = "info-text">Upload historical buildong license .xml files downloaded from <a id = "upload-link" href = "https://data.taipei/#/dataset/detail?id=c876ff02-af2e-4eb8-bd33-d444f5052733">data.taipei</a> so as to parse the file.</p>
       <a id = "info-button" href = "#">Upload</a>
-
-    </div>
-
-    <div id = "upload-section">
-
       <input id = "upload-button" type = "file" name = "upload-button" accept = ".xml" />
 
     </div>
 
     <div id = "preview-section">
 
-      <p id = "preview-title">File Preview</p>
+      <h2 id = "preview-title">Preview</h2>
       <p id = "preview-text"></p>
 
     </div>

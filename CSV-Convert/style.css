@@ -15,8 +15,9 @@
   --stpsClr: #DDBB22;  /* Navbar Status 'Processing' Color */
   --stfnClr: #30A330;  /* Navbar Status 'Finish' Color */
   --sterClr: #DA1010;  /* Navbar Status 'Error' Color */
-  --dftFont: 'Open Sans', 'Corbel', 'Dubai', 'Arial', sans-serif;  /* Default Typefaces */
-  --cdeFont: 'Consolas', console , monospace;  /* Code Typefaces */
+  --dftFont: 'Open Sans', 'Corbel', 'Dubai', 'Arial', sans-serif;  /* Default English Typefaces */
+  --dfzFont: 'Noto Sans TC' , 'PingFang' , sans-serif;  /* Default Chinese Typefaces */
+  --cdeFont: 'Consolas' , monospace;  /* Code Typefaces */
 
 }
 
@@ -44,7 +45,9 @@
 
 /* Imports */
 
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+
 
 /* Elements */
 
@@ -93,25 +96,33 @@ input[type='file'] {
 }
 
 
+
 /* Pseudo Elements */
+/*
+  Reference source code & author:
+
+    https://www.w3schools.com/howto/howto_css_custom_scrollbar.asp, by W3Schools
+
+*/
 
 ::-webkit-scrollbar {
-  width: 1em;
+  width: 1em; /* Scrollbar track width*/
 }
 
 ::-webkit-scrollbar-track {
-  background: #E0E0E0FF;
+  background: #E0E0E0FF; /* Scrollbar track color*/
 }
 
 ::-webkit-scrollbar-thumb {
   background: #909090;
   border: 2px hidden #FFF;
-  border-radius: 0.5em;
+  border-radius: 0.5em;  /* Scrollbar thumb settings*/
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #606060;
+  background: #606060;  /* Hovered scrollbar thumb settings*/
 }
+
 
 
 /* Classes */
@@ -169,6 +180,7 @@ input[type='file'] {
 }
 
 
+
 /* Ids */
 
 #navbar-section {
@@ -182,9 +194,11 @@ input[type='file'] {
 #navbar-header {
 
   background: var(--nbhdClr);
-  height: 30px;
-  padding: 5px 8px;
-  width: auto;
+  display: block;
+  float: left;
+  height: 38px;
+  overflow: hidden;
+  width: 90%;
 
 }
 
@@ -193,13 +207,37 @@ input[type='file'] {
   color: var(--txwtClr);
   font-size: 130%;
   margin: 0px;
+  padding: 5px 8px;
+
+}
+
+#navbar-language {
+
+  background: var(--nbhdClr);
+  display: block;
+  float: left;
+  height: 38px;
+  overflow: hidden;
+  text-align: right;
+  width: 10%;
+
+}
+
+#navbar-button {
+
+  color: var(--txwtClr);
+  display: block;
+  font-size: 130%;
+  font-style: normal;
+  margin: 0px;
+  padding: 5px 10% 5px 0px;
 
 }
 
 #info-section {
 
   float: left;
-  height: 480px;
+  height: 500px;
   margin-left: 1.5%;
   margin-right: 1.5%;
   margin-top: 15px;
@@ -215,6 +253,14 @@ input[type='file'] {
   margin-top: 10px;
 
 }
+
+
+/*
+  Reference source code & author:
+
+    https://github.com/chokcoco/iCSS/issues/109, by @chokcoco on GitHub
+
+*/
 
 #info-button {
 
@@ -240,25 +286,27 @@ input[type='file'] {
 
 }
 
-#upload-section {
-
-  float: left;
-  width: 66.66%;
-
-}
-
 #preview-section {
 
   display: block;
+  float: left;
+  height: 500px;
+  margin-left: 1.5%;
+  margin-right: 1.5%;
+  margin-top: 15px;
+  padding-left: 1.5%;
+  padding-right: 1.5%;
+  padding-top: 20px;
+  width: 60.66%;
 
 }
 
 #preview-text {
 
-  background-color: #D0D0D0;
-  height: 480px;
+  background-color: #E0E0E0;
+  height: 400px;
   font-family: var(--cdeFont);
-  margin: 0px;
+  margin-top: 10px;
   overflow: auto;
 
 }
