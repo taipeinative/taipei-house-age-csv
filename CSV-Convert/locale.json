@@ -1,0 +1,40 @@
+[
+
+  {
+    "en": "CSV Converter",
+    "zh": "CSV 轉換器"
+  },
+  {
+    "en": ".CSV Converter",
+    "zh": ".CSV 轉換器"
+  },
+  {
+    "en": "Upload",
+    "zh": "匯入"
+  },
+  {
+    "en": "Preview",
+    "zh": "預覽"
+  },
+  {
+    "en": "Convert",
+    "zh": "轉換"
+  },
+  {
+    "en": "Upload XML",
+    "zh": "匯入XML檔案"
+  },
+  {
+    "en": "Upload historical buildong license .xml files downloaded from ",
+    "zh": "匯入來自"
+  },
+  {
+    "en": "data.taipei",
+    "zh": "臺北市資料大平臺"
+  },
+  {
+    "en": " so as to parse the file.",
+    "zh": "的歷年建照摘要.xml檔案以便解析。"
+  }
+
+]
