@@ -179,6 +179,12 @@ input[type='file'] {
 
 }
 
+.info-disabled {
+
+  --gdClrA: #6BA0E0;
+  --gdClrB: #93B4E8;
+
+}
 
 
 /* Ids */

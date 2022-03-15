@@ -178,6 +178,10 @@ function message(code) {
       logMessage = `%c${timestamp}%c [Program] finish processing files.`;
       break;
 
+    case 'convert':
+      logMessage = `%c${timestamp}%c [Program] start converting files.`;
+      break;
+
   }
 
   console.log(logMessage,logCss1,logCss2);
@@ -229,6 +233,12 @@ function statusUpdate(code) {
 
         case 'uploadFailed':
           firstBlock.classList.replace('navbar-process','navbar-error');
+          break;
+
+        case 'convert':
+          secondBlock.innerHTML = 'Previewed';
+          secondBlock.classList.replace('navbar-focus','navbar-finish');
+          thirdBlock.classList.replace('navbar-none','navbar-process');
           break;
 
         }

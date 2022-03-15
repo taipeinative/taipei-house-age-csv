@@ -5,9 +5,12 @@
 1 Pre-defied variables
 2 Core functions
   2.1 window.onload();
-  2.2 uploadListener();
-  2.3 clickUpload();
+  2.2 clickUpload();
+  2.3 uploadListener();
   2.4 readfile();
+  2.5 clickNext();
+  2.6 nextListener();
+  2.7 convertToCSV();
 
 For codeSlicer(); and codeRestorer(); before beta 0.2.1, their functions were inherited by nonHTMLTagReplacer(); and xmlFileRebuilder(); in misc.js.
 
@@ -46,21 +49,6 @@ window.onload = function () {
 
 
 
-// A click event listener is implemented on 'Upload' button.
-function uploadListener (e) {
-
-  if (document.getElementById('upload-button')) {
-
-    document.getElementById('upload-button').click();
-
-  }
-
-  e.preventDefault();
-
-}
-
-
-
 // Intercept users' click event to trigger true <input> button.
 /*
   Reference source code & author:
@@ -71,8 +59,23 @@ function uploadListener (e) {
 function clickUpload() {
 
   var info = document.getElementById('info-button');
-  var upload = document.getElementById('upload-button');
   info.addEventListener("click", uploadListener , false);
+
+}
+
+
+
+// A click event listener is implemented on 'Upload' button.
+function uploadListener (e) {
+
+  var upload = document.getElementById('upload-button');
+  if (upload) {
+
+    upload.click();
+
+  }
+
+  e.preventDefault();
 
 }
 
@@ -108,10 +111,11 @@ function readfile() {
     isLonger = ( (hiddenCharactersLength > 0) ? (0) : (1) );
     xml = fileManager.result.slice(fromCode,toCode);
     previewText = xml.xmlFileRebuilder();
-    document.getElementById('preview-text').innerHTML = previewText;
     message();
     statusUpdate();
-    document.getElementById('info-button').removeEventListener("click", uploadListener , false);
+    localeUpdate();
+    clickNext();
+    document.getElementById('preview-text').innerHTML = previewText;
 
   };
 
@@ -127,3 +131,78 @@ function readfile() {
   fileManager.readAsText(file,"utf-8");
 
 }
+
+
+
+// Intercept users' click event to trigger true <input> button.
+/*
+  Reference source code & author:
+
+    https://developer.mozilla.org/zh-TW/docs/Web/API/File/Using_files_from_web_applications, by Mozilla
+
+*/
+function clickNext() {
+
+  var info = document.getElementById('info-button');
+  info.removeEventListener('click', uploadListener , false);
+  info.addEventListener('click', nextListener , false);
+
+}
+
+
+
+// A click event listener is implemented on 'Next' button.
+function nextListener (e) {
+
+  if (document.getElementById('info-button')) {
+
+    currentState = 'convert';
+    message();
+    statusUpdate();
+    localeUpdate();
+    fileManager.result.convertToCSV();
+
+  }
+
+  e.preventDefault();
+
+}
+
+
+
+// THIS FUNCTION CONVERTS XML TO CSV.
+/*
+  The element tree of Taipei02.xml:
+  ===============================================
+  [Elements]      [⚹]  [Definition]
+
+  Datas
+  └ Data
+    ├ 執照年度          Certificate Given Year
+    ├ 執照號碼          Certificate Number
+    ┆
+    ┆ (Omission)
+    ┆
+    ├ 工程造價          Cost of Construction
+    ├ 竣工日期     ⚹    Date of Completion
+    ├ 開工日期          Date of Groundbreaking
+    ├ 建築地點     ⚹    Construction Site
+    │ └ 地址       ⚹    Address
+    ├ 地段地號     ⚹    Land lot and Serial Number
+    ┆
+    ┆ (Omission)
+    ┆
+
+  ===============================================
+  ⚹ : These are what we are interested in, so we'll grab these data.
+
+*/
+String.prototype.convertToCSV = function () {
+
+  document.getElementById('preview-text').innerHTML = '';
+  document.getElementById('info-button').removeAttribute('href');
+  document.getElementById('info-button').classList.add('info-disabled');
+  document.getElementById('info-button').removeEventListener('click', nextListener , false);
+  var xmlDocument = (new DOMParser()).parseFromString(this, 'text/xml');
+
+};
