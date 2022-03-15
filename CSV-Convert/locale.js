@@ -1,3 +1,17 @@
+/*
+
+'locale.js' Contents
+=======================
+1 Pre-defied variables
+2 Core functions
+  2.1 (requesting locale files)
+  2.2 clickLanguage();
+  2.3 localeUpdate();
+
+*/
+
+
+
 // Pre-defined variables.
 var locale;
 
@@ -55,7 +69,6 @@ function localeUpdate() {
     var obj = locale[i];
     var objState = JSON.stringify(obj.state);
     var objRegEx = new RegExp( `${currentState}(?= |")` , 'g');
-    var prvRegEx = /<br><span class=\"continue\">\(End of the preview\)<br>\(\d+characters behind\)<\/span>|<br><span class=\"continue\">（預覽結束）<br>（尚有\d+個字元未顯示）<\/span>/;
 
     if ( ( ( objState.search(objRegEx) != -1 ) ? 1 : 0) || ( objState.includes('all') ) ) {
 
@@ -77,7 +90,7 @@ function localeUpdate() {
 
         case 'preview':
 
-          dom.innerHTML = codeRestorer(dom.innerHTML,'replace');
+          dom.innerHTML = dom.innerHTML.xmlFileRebuilder('update');
           break;
 
       }

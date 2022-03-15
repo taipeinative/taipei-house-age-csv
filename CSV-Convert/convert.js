@@ -1,15 +1,31 @@
+/*
+
+'convert.js' Contents
+=======================
+1 Pre-defied variables
+2 Core functions
+  2.1 window.onload();
+  2.2 uploadListener();
+  2.3 clickUpload();
+  2.4 readfile();
+
+For codeSlicer(); and codeRestorer(); before beta 0.2.1, their functions were inherited by nonHTMLTagReplacer(); and xmlFileRebuilder(); in misc.js.
+
+*/
+
+
+
 // Pre-defined variables.
 var currentState = 'upload';
 var language = 'en';
 var previewText = '';
 var codeLength;
-var previewLength;
+var hiddenCharactersLength;
 var fromCode = 0;
 var toCode = 9999;
 var fileManager;
 var xml;
 var isLonger = 0;
-
 
 
 
@@ -27,6 +43,21 @@ window.onload = function () {
   statusUpdate();
 
 };
+
+
+
+// A click event listener is implemented on 'Upload' button.
+function uploadListener (e) {
+
+  if (document.getElementById('upload-button')) {
+
+    document.getElementById('upload-button').click();
+
+  }
+
+  e.preventDefault();
+
+}
 
 
 
@@ -73,13 +104,13 @@ function readfile() {
 
     currentState = 'preview';
     codeLength = fileManager.result.length;
-    previewLength = codeLength - ( toCode - fromCode );
-    xml = codeSlicer(fileManager.result,fromCode,toCode);
-    previewText = codeRestorer(xml,'default');
+    hiddenCharactersLength = codeLength - ( toCode - fromCode );
+    isLonger = ( (hiddenCharactersLength > 0) ? (0) : (1) );
+    xml = fileManager.result.slice(fromCode,toCode);
+    previewText = xml.xmlFileRebuilder();
     document.getElementById('preview-text').innerHTML = previewText;
     message();
     statusUpdate();
-    localeUpdate();
     document.getElementById('info-button').removeEventListener("click", uploadListener , false);
 
   };
@@ -94,109 +125,5 @@ function readfile() {
   };
 
   fileManager.readAsText(file,"utf-8");
-
-}
-
-
-
-// Slice .xml files in order to speed up preview time.
-function codeSlicer (code,from,to) {
-
-  var result = code.slice(from,to);
-
-  if ( previewLength > 0 ) {
-
-    isLonger = 0;
-    return result;
-
-  } else {
-
-    isLonger = 1;
-
-    switch (language) {
-
-      case 'en' :
-        return `${result} ${locale[14].en}`;
-        break;
-
-      case 'zh' :
-        return `${result} ${locale[14].zh}`;
-        break;
-
-    }
-
-  }
-
-}
-
-
-
-// Restore features including line breaks and tabs from source code.
-/*
-  Following shows how these regular expressions work.
-
-    RegEx:  /<(?!br|span|\/span)/g , /\n/g , /\t/g
-    Input:  \t\t<tag>Hello World</tag>\n<br />
-    Output: &ensp;&ensp;&ensp;&ensp;&lt;tag>Hello World&lt;/tag><br /><br />
-
-    RegEx:  /\^\d+%/ , /(?<=\^)\d+(?=%)/
-    Input:  I^m feelin' 100% good. ^1111%
-    Output: I^m feelin' 100% good. <br /><span class = "continue">(End of the preview)<br />( 1111 characters behind)</span>
-
-*/
-function codeRestorer (code,tag) {
-
-  var result = code.replace(/<(?!br|span|\/span)/g,'&lt;').replace(/\n/g,'<br />').replace(/\t/g,'&ensp;&ensp;');
-
-  switch (tag) {
-
-    case 'default':
-
-      switch (language) {
-
-        case 'en':
-          result = ( (isLonger) ? (result) : ( result + locale[15].en + previewLength + locale[16].en ) );
-          break;
-
-        case 'zh':
-          result = ( (isLonger) ? (result) : ( result + locale[15].zh + previewLength + locale[16].zh ) );
-          break;
-
-      }
-      break;
-
-    case 'replace':
-
-      switch (language) {
-
-        case 'en':
-          result = ( (isLonger) ? (`${fileManager.result.slice(fromCode,toCode).replace(/<(?!br|span|\/span)/g,'&lt;').replace(/\n/g,'<br />').replace(/\t/g,'&ensp;&ensp;')} ${locale[14].en}`) : (xml + locale[15].en + previewLength + locale[16].en) );
-          break;
-
-        case 'zh':
-          result = ( (isLonger) ? (`${fileManager.result.slice(fromCode,toCode).replace(/<(?!br|span|\/span)/g,'&lt;').replace(/\n/g,'<br />').replace(/\t/g,'&ensp;&ensp;')} ${locale[14].zh}`) : (xml + locale[15].zh + previewLength + locale[16].zh) );
-          break;
-
-      }
-      break;
-
-  }
-
-  return result;
-
-}
-
-
-
-// Listener implemented on 'Upload' button.
-function uploadListener (e) {
-
-  if (document.getElementById('upload-button')) {
-
-    document.getElementById('upload-button').click();
-
-  }
-
-  e.preventDefault();
 
 }
