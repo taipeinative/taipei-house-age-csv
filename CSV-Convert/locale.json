@@ -143,6 +143,18 @@
     "state": "convert , convertEnded",
     "en": "Download",
     "zh": "下載"
+  },
+  {
+    "id": "info-title",
+    "state": "convertEnded",
+    "en": "Download Files",
+    "zh": "下載檔案"
+  },
+  {
+    "id": "info-text",
+    "state": "convertEnded",
+    "en": "Click the button below to download your .csv file!",
+    "zh": "請點擊下方按鈕下載.csv檔案！"
   }
 
 ]

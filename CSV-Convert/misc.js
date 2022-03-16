@@ -8,6 +8,8 @@
   2.2 (String).nonHTMLTagReplacer();
   2.3 message();
   2.4 statusUpdate();
+  2.5 dataFixer();
+  2.6 (Array).removeDuplicate();
 
 */
 
@@ -182,6 +184,10 @@ function message(code) {
       logMessage = `%c${timestamp}%c [Program] start converting files.`;
       break;
 
+    case 'convertEnded':
+      logMessage = `%c${timestamp}%c [Program] finish converting files.`;
+      break;
+
   }
 
   console.log(logMessage,logCss1,logCss2);
@@ -226,7 +232,6 @@ function statusUpdate(code) {
           break;
 
         case 'preview':
-          firstBlock.innerHTML = 'Uploaded';
           firstBlock.classList.replace('navbar-process','navbar-finish');
           secondBlock.classList.replace('navbar-none','navbar-focus');
           break;
@@ -236,9 +241,12 @@ function statusUpdate(code) {
           break;
 
         case 'convert':
-          secondBlock.innerHTML = 'Previewed';
           secondBlock.classList.replace('navbar-focus','navbar-finish');
           thirdBlock.classList.replace('navbar-none','navbar-process');
+          break;
+
+        case 'convertEnded':
+          thirdBlock.classList.replace('navbar-process','navbar-finish');
           break;
 
         }
@@ -259,3 +267,48 @@ function statusUpdate(code) {
   }
 
 }
+
+
+// Fix the mistake in the original xml data, like misspelling words or missing characters.
+String.prototype.dataFixer = function () {
+
+  var result;
+  result = this.replace(/ (一|二|三|四|五|六|七|八|九|十)+樓/g , '')
+  result = result.replace(/北投區公？路/g , '北投區公舘路'); // Missing '舘'
+  result = result.replace(/中正區泉州1/g , '中正區泉州街1'); // Missing '街'
+  result = result.replace(/大同區赤峰街-75\d樓/g , '大同區赤峰街75號'); // Missing '號' and use wrong delimeter
+  return result;
+
+}
+
+
+
+// Remove duplicates in the array.
+/*
+  Reference source code & author:
+
+    https://stackoverflow.com/questions/840781/get-all-non-unique-values-i-e-duplicate-more-than-one-occurrence-in-an-array, by @swilliams on Stackoverflow
+
+*/
+Array.prototype.removeDuplicate = function () {
+
+  var k;
+  var results = [];
+  var tempArray;
+
+  tempArray = this;
+  tempArray.sort();
+
+  for (k = 0; k < tempArray.length; k++) {
+
+    if ( ( tempArray[k] != tempArray[k+1] ) ) {
+
+      results.push(tempArray[k]);
+
+    }
+
+  }
+
+  return results;
+
+};

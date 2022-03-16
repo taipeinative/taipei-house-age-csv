@@ -29,7 +29,11 @@ var toCode = 9999;
 var fileManager;
 var xml;
 var isLonger = 0;
-
+var itemList = [];
+var completionList = [];
+var addressList = [];
+var addressArray = [];
+var resultArray = [];
 
 
 
@@ -188,7 +192,7 @@ function nextListener (e) {
     ├ 開工日期          Date of Groundbreaking
     ├ 建築地點     ⚹    Construction Site
     │ └ 地址       ⚹    Address
-    ├ 地段地號     ⚹    Land lot and Serial Number
+    ├ 地段地號          Land lot and Serial Number
     ┆
     ┆ (Omission)
     ┆
@@ -196,13 +200,71 @@ function nextListener (e) {
   ===============================================
   ⚹ : These are what we are interested in, so we'll grab these data.
 
+  [Formats of the fields]                        [Example]
+  <竣工日期>: yyymmdd                             0921031 (yyy are in Minguo (ROC) calender format)
+  <地址>: 臺北市◯◯區◯◯路/街/大道◯◯號 ◯樓    臺北市北投區三合街一段118巷8號
+                                                 臺北市中山區北安路669號 二樓之1
+                                                 臺北市中山區民生東路三段2-1號
+                                                 臺北市中山區民生東路三段2號之1
+                                                 臺北市文山區萬興里指南路二段45巷10弄15號 之12樓之1
+                                                 臺北市大同區赤峰街-752樓
+                                                 臺北市中正區泉州149號
+                                                 臺北市北投區公？路198號
+
 */
 String.prototype.convertToCSV = function () {
 
+  var i;
+  var j;
+  var result = '竣工日期,地址<br>';
   document.getElementById('preview-text').innerHTML = '';
   document.getElementById('info-button').removeAttribute('href');
   document.getElementById('info-button').classList.add('info-disabled');
   document.getElementById('info-button').removeEventListener('click', nextListener , false);
   var xmlDocument = (new DOMParser()).parseFromString(this, 'text/xml');
+  itemList = xmlDocument.getElementsByTagName('Data');
+  completionList = [];
+  addressList = [];
+  addressArray = [];
+  resultArray = [];
+
+  for (i = 0 ; i < itemList.length ; i++) {
+
+    completionList = itemList[i].getElementsByTagName('竣工日期');
+    addressList = itemList[i].getElementsByTagName('地址');
+
+    if ( completionList[0].innerHTML != '') {
+
+      for (j = 0; j < addressList.length; j++) {
+
+        addressArray.push( addressList[j].innerHTML.replace(/ (b|B)*\d+樓/g,'') );
+
+      }
+
+      addressArray = addressArray.removeDuplicate();
+
+      for (j = 0; j < addressArray.length; j++) {
+
+        resultArray.push(`${completionList[0].innerHTML},${addressArray[j]}`);
+
+      }
+
+      completionList = [];
+      addressList = [];
+      addressArray = [];
+
+    }
+
+  }
+
+  result = result + resultArray.join('<br>');
+
+  document.getElementById('preview-text').innerHTML = result;
+  document.getElementById('info-button').classList.remove('info-disabled');
+  currentState = 'convertEnded';
+  message();
+  statusUpdate();
+  localeUpdate();
+
 
 };
