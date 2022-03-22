@@ -174,6 +174,21 @@ function nextListener (e) {
 
 
 
+// A click event listener is implemented on 'Download' button.
+function downloadListener (e) {
+
+  if (document.getElementById('info-button')) {
+
+    downloadBlobFile();
+
+  }
+
+  e.preventDefault();
+
+}
+
+
+
 // THIS FUNCTION CONVERTS XML TO CSV.
 /*
   The element tree of Taipei02.xml:
@@ -216,11 +231,12 @@ String.prototype.convertToCSV = function () {
 
   var i;
   var j;
-  var result = '竣工日期,地址<br>';
+  var result = 'Address,Date,Age<br>';
+  var info = document.getElementById('info-button');
   document.getElementById('preview-text').innerHTML = '';
-  document.getElementById('info-button').removeAttribute('href');
-  document.getElementById('info-button').classList.add('info-disabled');
-  document.getElementById('info-button').removeEventListener('click', nextListener , false);
+  info.removeAttribute('href');
+  info.classList.add('info-disabled');
+  info.removeEventListener('click', nextListener , false);
   var xmlDocument = (new DOMParser()).parseFromString(this, 'text/xml');
   itemList = xmlDocument.getElementsByTagName('Data');
   completionList = [];
@@ -245,7 +261,7 @@ String.prototype.convertToCSV = function () {
 
       for (j = 0; j < addressArray.length; j++) {
 
-        resultArray.push(`${completionList[0].innerHTML},${addressArray[j]}`);
+        resultArray.push(`${addressArray[j]},${completionList[0].innerHTML},`);
 
       }
 
@@ -257,10 +273,14 @@ String.prototype.convertToCSV = function () {
 
   }
 
+  resultArray.sort();
   result = result + resultArray.join('<br>');
+  result = result.dataFixer();
 
   document.getElementById('preview-text').innerHTML = result;
-  document.getElementById('info-button').classList.remove('info-disabled');
+  info.addEventListener('click', downloadListener , false);
+  info.setAttribute('href','#');
+  info.classList.remove('info-disabled');
   currentState = 'convertEnded';
   message();
   statusUpdate();

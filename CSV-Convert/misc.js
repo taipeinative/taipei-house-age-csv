@@ -200,7 +200,7 @@ function message(code) {
 /*
   Reference source code & author:
 
-    https://www.w3schools.com/jsref/prop_element_classlist.asp, W3Schools
+    https://www.w3schools.com/jsref/prop_element_classlist.asp, by W3Schools
 
 */
 function statusUpdate(code) {
@@ -269,14 +269,106 @@ function statusUpdate(code) {
 }
 
 
+
+// Download .csv files.
+/*
+  Reference source code & author:
+
+    https://www.tinytsunami.info/javascript-file-process/, by 羊羽手札
+
+*/
+function downloadBlobFile() {
+
+  var k;
+  var address;
+  var age;
+  var finDate;
+  var csv1Array = ['id,Address,Response_Address,Response_X,Response_Y\n'];
+  var csv2Array = ['Address,Date,Age\n'];
+  var csv1String = '';
+  var csv2String = '';
+  var csv1Url;
+  var csv2Url;
+  var downloadNode;
+
+  for (k = 0; k < resultArray.length; k++) {
+
+    address = resultArray[k].dataFixer().slice(0,resultArray[k].search(','));
+    finDate = resultArray[k].dataFixer().slice(resultArray[k].search(',')+1,resultArray[k].search(',')+8);
+
+    if ( (parseInt( finDate ) / 10000 - Math.floor( parseInt( finDate ) / 10000 ) ) >= 0.0325 ) {
+
+      age = 110 - Math.floor( parseInt( finDate ) / 10000 );
+
+    } else {
+
+      age = 111 - Math.floor( parseInt( finDate ) / 10000 );
+
+    }
+
+    if ( k+1 < resultArray.length) {
+
+      csv1Array.push( `${k+1},${address},,,\n` );
+      csv2Array.push( `${address},${finDate},${age}\n` );
+
+    } else {
+
+      csv1Array.push( `${k+1},${address},,,` );
+      csv2Array.push( `${address},${finDate},${age}` );
+
+    }
+
+  }
+
+  csv1String = csv1Array.join('');
+  csv2String = csv2Array.join('');
+  let csv1 = new Blob([csv1String],{type : 'text/csv;charset=UTF-8'});
+  csv1Url = URL.createObjectURL(csv1);
+  let csv2 = new Blob([csv2String],{type : 'text/csv;charset=UTF-8'});
+  csv2Url = URL.createObjectURL(csv2);
+  downloadNode = document.createElement('a');
+  downloadNode.id = 'info-download';
+  downloadNode.style.display = 'none';
+  downloadNode.href = csv1Url;
+  downloadNode.download = 'TGOS.csv';
+  document.getElementById('info-section').appendChild(downloadNode);
+  downloadNode.click();
+  // window.Url.revokeObjectURL(csv1Url);
+  downloadNode.href = csv2Url;
+  downloadNode.download = 'Age.csv';
+  downloadNode.click();
+  // window.Url.revokeObjectURL(csv2Url);
+  document.getElementById('info-download').remove();
+
+}
+
+
+
 // Fix the mistake in the original xml data, like misspelling words or missing characters.
 String.prototype.dataFixer = function () {
 
   var result;
-  result = this.replace(/ (一|二|三|四|五|六|七|八|九|十)+樓/g , '')
-  result = result.replace(/北投區公？路/g , '北投區公舘路'); // Missing '舘'
-  result = result.replace(/中正區泉州1/g , '中正區泉州街1'); // Missing '街'
-  result = result.replace(/大同區赤峰街-75\d樓/g , '大同區赤峰街75號'); // Missing '號' and use wrong delimeter
+  result = this.replace(/ (一|二|三|四|五|六|七|八|九|十)+樓/g , ''); // Convert Chinese numbers to Arabic Figures
+
+  // Following were missing '路' (literally 'road')
+
+  result = result.replace(/北安(?!路|里)/g , '北安路');
+  result = result.replace(/天祥(?!路|里)/g , '天祥路');
+  result = result.replace(/行義(?!路|里)/g , '行義路');
+  result = result.replace(/羅斯福(?!路|里)/g , '羅斯福路');
+  result = result.replace(/龍江(?!路|里)/g , '龍江路');
+
+  // Following were missing '街' (literally 'street')
+
+  result = result.replace(/泉州(?!街|里)/g , '泉州街');
+  result = result.replace(/大湖(?!街|里)/g , '大湖街');
+
+  // Following were misspelled or missing other Chinese characters
+
+  result = result.replace(/汀洲路/g , '汀州路');  // Misspelled '州' as '洲'
+  result = result.replace(/公？路/g , '公舘路'); // Missed '舘'
+  result = result.replace(/大同區赤峰街-75\d樓/g , '大同區赤峰街75號'); // Missed '號' and used wrong delimeter
+
   return result;
 
 }
