@@ -1,3 +1,17 @@
+/*
+
+'locale.js' Contents
+=======================
+1 Pre-defied variables
+2 Core functions
+  2.1 (requesting locale files)
+  2.2 clickLanguage();
+  2.3 localeUpdate();
+
+*/
+
+
+
 // Pre-defined variables.
 var locale;
 
@@ -51,6 +65,7 @@ function localeUpdate() {
 
   for ( var i = 0; i < locale.length; i++ ) {
 
+    var dom = document.getElementById(locale[i].id);
     var obj = locale[i];
     var objState = JSON.stringify(obj.state);
     var objRegEx = new RegExp( `${currentState}(?= |")` , 'g');
@@ -60,11 +75,22 @@ function localeUpdate() {
       switch ( language ) {
 
         case 'en':
-          document.getElementById(locale[i].id).innerHTML = locale[i].en;
+          dom.innerHTML = locale[i].en;
           break;
 
         case 'zh':
-          document.getElementById(locale[i].id).innerHTML = locale[i].zh;
+          dom.innerHTML = locale[i].zh;
+          break;
+
+      }
+
+    } else if ( ( ( objState.search('special') != -1 ) ? 1 : 0) ) {
+
+      switch ( currentState ) {
+
+        case 'preview':
+
+          dom.innerHTML = dom.innerHTML.xmlFileRebuilder('update');
           break;
 
       }

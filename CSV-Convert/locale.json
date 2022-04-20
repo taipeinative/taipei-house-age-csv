@@ -125,6 +125,36 @@
     "state": "preview",
     "en": "Next",
     "zh": "下一步"
+  },
+  {
+    "id": "info-title",
+    "state": "convert",
+    "en": "Converting Files",
+    "zh": "轉換檔案"
+  },
+  {
+    "id": "info-text",
+    "state": "convert",
+    "en": "We are converting your .xml files into .csv format...",
+    "zh": "正在將.xml檔案轉換為.csv格式……"
+  },
+  {
+    "id": "info-button",
+    "state": "convert , convertEnded",
+    "en": "Download",
+    "zh": "下載"
+  },
+  {
+    "id": "info-title",
+    "state": "convertEnded",
+    "en": "Download Files",
+    "zh": "下載檔案"
+  },
+  {
+    "id": "info-text",
+    "state": "convertEnded",
+    "en": "Click the button below to download your .csv file!",
+    "zh": "請點擊下方按鈕下載.csv檔案！"
   }
 
 ]

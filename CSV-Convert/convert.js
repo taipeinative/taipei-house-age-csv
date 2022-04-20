@@ -1,9 +1,39 @@
-// Pre-defined variables.
-var previewText = '';
-var isLonger = 0;
-var language = 'en';
-var currentState = 'upload';
+/*
 
+'convert.js' Contents
+=======================
+1 Pre-defied variables
+2 Core functions
+  2.1 window.onload();
+  2.2 clickUpload();
+  2.3 uploadListener();
+  2.4 readfile();
+  2.5 clickNext();
+  2.6 nextListener();
+  2.7 convertToCSV();
+
+For codeSlicer(); and codeRestorer(); before beta 0.2.1, their functions were inherited by nonHTMLTagReplacer(); and xmlFileRebuilder(); in misc.js.
+
+*/
+
+
+
+// Pre-defined variables.
+var currentState = 'upload';
+var language = 'en';
+var previewText = '';
+var codeLength;
+var hiddenCharactersLength;
+var fromCode = 0;
+var toCode = 9999;
+var fileManager;
+var xml;
+var isLonger = 0;
+var itemList = [];
+var completionList = [];
+var addressList = [];
+var addressArray = [];
+var resultArray = [];
 
 
 
@@ -33,19 +63,23 @@ window.onload = function () {
 function clickUpload() {
 
   var info = document.getElementById('info-button');
+  info.addEventListener("click", uploadListener , false);
+
+}
+
+
+
+// A click event listener is implemented on 'Upload' button.
+function uploadListener (e) {
+
   var upload = document.getElementById('upload-button');
+  if (upload) {
 
-  info.addEventListener("click", function (e) {
+    upload.click();
 
-    if (upload) {
+  }
 
-      upload.click();
-
-    }
-
-    e.preventDefault();
-
-  }, false);
+  e.preventDefault();
 
 }
 
@@ -62,7 +96,7 @@ function clickUpload() {
 function readfile() {
 
   var file = this.files[0];
-  var fileManager = new FileReader();
+  fileManager = new FileReader();
 
   fileManager.onloadstart = function (event) {
 
@@ -76,11 +110,16 @@ function readfile() {
   fileManager.onload = function (event) {
 
     currentState = 'preview';
-    previewText = codeRestorer(codeSlicer(fileManager.result,0,9999));
-    document.getElementById('preview-text').innerHTML = previewText;
+    codeLength = fileManager.result.length;
+    hiddenCharactersLength = codeLength - ( toCode - fromCode );
+    isLonger = ( (hiddenCharactersLength > 0) ? (0) : (1) );
+    xml = fileManager.result.slice(fromCode,toCode);
+    previewText = xml.xmlFileRebuilder();
     message();
     statusUpdate();
     localeUpdate();
+    clickNext();
+    document.getElementById('preview-text').innerHTML = previewText;
 
   };
 
@@ -99,45 +138,153 @@ function readfile() {
 
 
 
-// Slice .xml files in order to speed up preview time.
-function codeSlicer (code,from,to) {
+// Intercept users' click event to trigger true <input> button.
+/*
+  Reference source code & author:
 
-  var codeLength = code.length;
-  var result = code.slice(from,to);
-  if ( codeLength > ( to - from) ) {
+    https://developer.mozilla.org/zh-TW/docs/Web/API/File/Using_files_from_web_applications, by Mozilla
 
-    isLonger = 0;
-    return `${result + '^' + ( codeLength - ( to - from ) ) + '%' }`;
+*/
+function clickNext() {
 
-  } else {
+  var info = document.getElementById('info-button');
+  info.removeEventListener('click', uploadListener , false);
+  info.addEventListener('click', nextListener , false);
 
-    isLonger = 1;
-    return `${result} <br /><span class = "continue">(End of the preview)</span>`;
+}
+
+
+
+// A click event listener is implemented on 'Next' button.
+function nextListener (e) {
+
+  if (document.getElementById('info-button')) {
+
+    currentState = 'convert';
+    message();
+    statusUpdate();
+    localeUpdate();
+    fileManager.result.convertToCSV();
 
   }
 
+  e.preventDefault();
+
 }
 
 
 
-// Restore features including line breaks and tabs from source code.
+// A click event listener is implemented on 'Download' button.
+function downloadListener (e) {
+
+  if (document.getElementById('info-button')) {
+
+    downloadBlobFile();
+
+  }
+
+  e.preventDefault();
+
+}
+
+
+
+// THIS FUNCTION CONVERTS XML TO CSV.
 /*
-  Following shows how these regular expressions work.
+  The element tree of Taipei02.xml:
+  ===============================================
+  [Elements]      [⚹]  [Definition]
 
-    RegEx:  /<(?!br|span|\/span)/g , /\n/g , /\t/g
-    Input:  \t\t<tag>Hello World</tag>\n<br />
-    Output: &ensp;&ensp;&ensp;&ensp;&lt;tag>Hello World&lt;/tag><br /><br />
+  Datas
+  └ Data
+    ├ 執照年度          Certificate Given Year
+    ├ 執照號碼          Certificate Number
+    ┆
+    ┆ (Omission)
+    ┆
+    ├ 工程造價          Cost of Construction
+    ├ 竣工日期     ⚹    Date of Completion
+    ├ 開工日期          Date of Groundbreaking
+    ├ 建築地點     ⚹    Construction Site
+    │ └ 地址       ⚹    Address
+    ├ 地段地號          Land lot and Serial Number
+    ┆
+    ┆ (Omission)
+    ┆
 
-    RegEx:  /\^\d+%/ , /(?<=\^)\d+(?=%)/
-    Input:  I^m feelin' 100% good. ^1111%
-    Output: I^m feelin' 100% good. <br /><span class = "continue">(End of the preview)<br />( 1111 characters behind)</span>
+  ===============================================
+  ⚹ : These are what we are interested in, so we'll grab these data.
+
+  [Formats of the fields]                        [Example]
+  <竣工日期>: yyymmdd                             0921031 (yyy are in Minguo (ROC) calender format)
+  <地址>: 臺北市◯◯區◯◯路/街/大道◯◯號 ◯樓    臺北市北投區三合街一段118巷8號
+                                                 臺北市中山區北安路669號 二樓之1
+                                                 臺北市中山區民生東路三段2-1號
+                                                 臺北市中山區民生東路三段2號之1
+                                                 臺北市文山區萬興里指南路二段45巷10弄15號 之12樓之1
+                                                 臺北市大同區赤峰街-752樓
+                                                 臺北市中正區泉州149號
+                                                 臺北市北投區公？路198號
 
 */
-function codeRestorer (code) {
+String.prototype.convertToCSV = function () {
 
-  var result = code.replace(/<(?!br|span|\/span)/g,'&lt;').replace(/\n/g,'<br />').replace(/\t/g,'&ensp;&ensp;');
-  result = ( (isLonger) ? (result) : ( result.replace(/\^\d+%/,'<br /><span class = "continue">(End of the preview)<br />(') + result.match(/(?<=\^)\d+(?=%)/) + ' characters behind)</span>') );
+  var i;
+  var j;
+  var result = 'Address,Date,Age<br>';
+  var info = document.getElementById('info-button');
+  document.getElementById('preview-text').innerHTML = '';
+  info.removeAttribute('href');
+  info.classList.add('info-disabled');
+  info.removeEventListener('click', nextListener , false);
+  var xmlDocument = (new DOMParser()).parseFromString(this, 'text/xml');
+  itemList = xmlDocument.getElementsByTagName('Data');
+  completionList = [];
+  addressList = [];
+  addressArray = [];
+  resultArray = [];
 
-  return result;
+  for (i = 0 ; i < itemList.length ; i++) {
 
-}
+    completionList = itemList[i].getElementsByTagName('竣工日期');
+    addressList = itemList[i].getElementsByTagName('地址');
+
+    if ( completionList[0].innerHTML != '') {
+
+      for (j = 0; j < addressList.length; j++) {
+
+        addressArray.push( addressList[j].innerHTML.replace(/ (b|B)*\d+樓/g,'') );
+
+      }
+
+      addressArray = addressArray.removeDuplicate();
+
+      for (j = 0; j < addressArray.length; j++) {
+
+        resultArray.push(`${addressArray[j]},${completionList[0].innerHTML},`);
+
+      }
+
+      completionList = [];
+      addressList = [];
+      addressArray = [];
+
+    }
+
+  }
+
+  resultArray.sort();
+  result = result + resultArray.join('<br>');
+  result = result.dataFixer();
+
+  document.getElementById('preview-text').innerHTML = result;
+  info.addEventListener('click', downloadListener , false);
+  info.setAttribute('href','#');
+  info.classList.remove('info-disabled');
+  currentState = 'convertEnded';
+  message();
+  statusUpdate();
+  localeUpdate();
+
+
+};
